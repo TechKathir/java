@@ -1,19 +1,24 @@
 package linkedlist;
 
+import java.util.Iterator;
+
 public class LinkedMain {
 
     public static void main(String[] args) {
-        DoubleLinked d = new DoubleLinked();
-        d.add(1); // 4
-        d.add(2); // 3
-        d.add(3); // 2
-        d.add(4); // 1
-        d.add(5); // 0
-        d.remove(3);
-        System.out.println("-----");
-        d.print();
-//        System.out.println(d.getLast());
-//        d.remove(4);
-//        System.out.println("--------------");
+        SingleLinked singleLinked = new SingleLinked();
+        singleLinked.add(1);
+        singleLinked.add(2);
+        singleLinked.add(3);
+        singleLinked.add(4);
+        singleLinked.add(6);
+        singleLinked.add(68);
+        singleLinked.print();
+        singleLinked.reverse();
+        System.out.println("----");
+        singleLinked.print();
+//        System.out.println(singleLinked.get(0));
+//        System.out.println(singleLinked.get(1));
+//        System.out.println(singleLinked.get(2));
+//        singleLinked.print();
     }
 }

@@ -1,79 +1,132 @@
 package linkedlist;
 
-public class SingleLinked {
+import java.util.Iterator;
+
+public class SingleLinked implements ILinkedList, Iterable<Integer> {
 
     private Node head;
     private int size;
 
-    public int size() {
-        return size;
+    public boolean isEmpty() {
+        return size == 0;
     }
 
-    public void add(int i) {
-        if (head == null) {
-            Node node = new Node();
-            node.value = i;
-            head = node;
-//            System.out.println(head.value);
+    @Override
+    public void add(int value) {
+        if (isEmpty()) {
+            head = new Node(value);
         } else {
-            Node node = new Node();
-            node.value = i;
-            node.nextNode = head;
-            head = node;
-//            System.out.println(head.value);
-//            System.out.println("nex node - "+ head.nextNode.value);
+            Node nodeAt = getNodeAt(size - 1);
+            nodeAt.nextNode = new Node(value);
         }
         size++;
     }
 
-    public void remove(int index) {
+    @Override
+    public void add(int index, int value) {
         if (index == 0) {
-            head = head.nextNode;
-            return;
+            head = new Node(head.nextNode, value);
         }
-        int count = 1;
-        Node temp = head.nextNode;
-        while (count <= index) {
-            System.out.println("count - " + count);
-            System.out.println("index - " + index);
-            if (count == (index - 1)) {
-                System.out.println("inside");
-                System.out.println("temp - " + temp);
-                if (temp.nextNode != null) {
-                    temp.nextNode = temp.nextNode.nextNode;
-                }
-                break;
-            }
-            temp = temp.nextNode;
-            count++;
-        }
+        Node nodeAt = getNodeAt(index - 1);
+        Node nextNode = nodeAt.nextNode;
+        nodeAt.nextNode = new Node(nextNode, value);
+        size++;
     }
 
-    public int get(int index) {
-        if (index == 0) return head.value;
-        int count = 1;
-        Node temp = head.nextNode;
-        while (count != index) {
-            temp = temp.nextNode;
-            System.out.println("count - " + count);
-            System.out.println("index - " + index);
-            count++;
+
+    @Override
+    public boolean remove(int index) {
+        if (index == 0) {
+            head = head.nextNode;
+        } else {
+            Node nodeAt = getNodeAt(index - 1);
+            nodeAt.nextNode = nodeAt.nextNode.nextNode;
         }
-        return temp.value;
+        size--;
+        return true;
+    }
+
+    @Override
+    public int get(int index) {
+        return getNodeAt(index).value;
+    }
+
+    @Override
+    public void insert(int index, int value) {
+        getNodeAt(index).value = value;
+    }
+
+    private void validateIndex(int index) {
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException("Index out of bounds");
+    }
+
+    private Node getNodeAt(int index) {
+        validateIndex(index);
+        if (index == 0) {
+            return head;
+        }
+        int tempIdx = 0;
+        Node current = head;
+        while (tempIdx < index) {
+            current = current.nextNode;
+            tempIdx++;
+        }
+        return current;
     }
 
     public void print() {
-        Node temp = head;
-        int count = 0;
-        while (temp != null) {
-            System.out.println("idx - " + count + " value - " + temp.value);
-            temp = temp.nextNode;
-            count++;
+        Node current = head;
+        while (current != null) {
+            System.out.println(current.value);
+            current = current.nextNode;
         }
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return new SingleLinkListIterator();
     }
 
     private class Node {
         private int value;
         private Node nextNode;
+
+        public Node(Node nextNode, int value) {
+            this.nextNode = nextNode;
+            this.value = value;
+        }
+
+        public Node(int value) {
+            this.value = value;
+        }
     }
+
+    private class SingleLinkListIterator implements Iterator<Integer> {
+        private Node current = head;
+
+        @Override
+        public boolean hasNext() {
+            return current != null;
+        }
+
+        @Override
+        public Integer next() {
+            int value = current.value;
+            current = current.nextNode;
+            return value;
+        }
+    }
+
+    public void reverse() {
+        Node temp = head;
+        Node perv = null;
+        while (temp != null){
+            Node nextNode = temp.nextNode;
+            temp.nextNode = perv;
+            perv = temp;
+            temp = nextNode;
+        }
+        head = perv;
+    }
+
 }
